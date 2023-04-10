@@ -1,0 +1,24 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: myapp-argo-application
+  namespace: argocd
+spec:
+  project: default
+
+  source:
+    repoURL: https://github.com/hejoes/aks-nodejs-argocd.git
+    targetRevision: HEAD
+    path: manifests #folder we want to track
+  destination: 
+    server: https://kubernetes.default.svc #cluster where argocd deploys
+    namespace: nodejs #namespace where argocd deploys
+
+  syncPolicy:
+    syncOptions:
+    - CreateNamespace=true #creates ns automatically
+
+    automated:
+      selfHeal: true #automatically syncs any changes from git, git only source of truth (by default not set)
+      prune: true #automatically delete resources when not in git 
+
